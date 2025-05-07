@@ -1,24 +1,514 @@
-This is free and unencumbered software released into the public domain.
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A Step in Cybersecurity - منصة تعليمية متقدمة وعصرية</title>
+<style>
+  /* Base reset and styles */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  html, body {
+    height: 100%; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9fafc; color: #222; direction: rtl;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app {
+    width: 95vw;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: 1.5rem 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Platform Header */
+  .header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  h1.platform-title {
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-weight: 900;
+    font-size: 3.8rem;
+    color: #1e3a8a;
+    text-shadow: 2px 2px 10px rgba(30, 58, 138, 0.5);
+    letter-spacing: 3px;
+  }
+  p.platform-subtitle {
+    font-family: "Calibri", sans-serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: #444;
+    margin-top: 0.4rem;
+  }
+  /* Navbar */
+  nav#navbar {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: start;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    border-radius: 12px;
+    box-shadow: 0 6px 21px rgba(37, 99, 235, 0.4);
+    user-select: none;
+    margin-bottom: 1.5rem;
+  }
+  nav#navbar button {
+    background: transparent;
+    border: none;
+    color: #eef2ff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  nav#navbar button:hover,
+  nav#navbar button:focus,
+  nav#navbar button.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    outline: none;
+    transform: scale(1.05);
+  }
+  nav#navbar button svg {
+    width: 22px;
+    height: 22px;
+    fill: #eef2ff;
+  }
+  /* Login and Signup Styles */
+  #loginSection, #signupModal, #appSection {
+    display: none;
+  }
+  #loginSection.active,
+  #appSection.active {
+    display: block;
+  }
+  #signupModal.active {
+    position: fixed;
+    z-index: 1500;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    background: #fff;
+    padding: 1.8rem 2.5rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+    width: 330px;
+  }
+  #signupModal .close-btn {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #444;
+    cursor: pointer;
+  }
+  #signupModal .close-btn:hover,
+  #signupModal .close-btn:focus {
+    color: #000;
+    outline: none;
+  }
+  h2 {
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: #1e40af;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.2rem;
+  }
+  input[type="email"], input[type="password"], input[type="text"], input[type="number"], textarea {
+    padding: 0.55rem 0.7rem;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    font-family: inherit;
+    width: 100%;
+    resize: vertical;
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 8px rgba(59,130,246,0.6);
+  }
+  textarea {
+    min-height: 100px;
+  }
+  button.submit-btn {
+    margin-top: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: 12px;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.7);
+    transition: background-color 0.3s ease;
+  }
+  button.submit-btn:hover, button.submit-btn:focus {
+    background-color: #1d4ed8;
+    outline: none;
+  }
+  button.toggle-signup {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  button.toggle-signup:hover, button.toggle-signup:focus {
+    text-decoration: underline;
+    outline: none;
+  }
+  .error-msg {
+    color: #dc2626;
+    font-size: 0.9rem;
+    min-height: 1.2em;
+  }
+  /* Platform Content Styles */
+  #appSection {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+  #appSection.active {
+    display: flex;
+  }
+  .content-nav {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .content-nav button {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 15px;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.7);
+    transition: background-color 0.3s ease;
+  }
+  .content-nav button:hover, .content-nav button:focus {
+    background-color: #1d4ed8;
+    outline: none;
+  }
+  .content-nav button.active {
+    background-color: #1e40af;
+    box-shadow: 0 6px 22px rgba(30, 64, 175, 0.8);
+  }
+  section.page {
+    display: none;
+  }
+  section.page.active {
+    display: block;
+  }
+  /* Lessons Section */
+  #lessonsSection {
+    width: 100%;
+  }
+  #lessonsSection h2 {
+    font-weight: 900;
+    font-size: 2rem;
+    color: #1e3a8a;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .lesson-card {
+    background: #e9f0ff;
+    margin-bottom: 1.2rem;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .lesson-card:hover, .lesson-card:focus {
+    outline: none;
+    box-shadow: 0 8px 26px rgba(30, 58, 138, 0.4);
+    transform: translateY(-3px);
+  }
+  .lesson-title {
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: #0e2d7a;
+    margin-bottom: 0.4rem;
+  }
+  .lesson-description {
+    font-style: italic;
+    color: #334466;
+    margin-bottom: 0.5rem;
+  }
+  .lesson-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.95rem;
+    color: #617d9e;
+  }
+  .lesson-meta span {
+    user-select: none;
+  }
+  .buy-btn {
+    margin-top: 0.8rem;
+    background-color: #27ae60;
+    padding: 0.5rem 1.3rem;
+    border: none;
+    border-radius: 15px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .buy-btn:hover, .buy-btn:focus {
+    background-color: #1e8449;
+    outline: none;
+  }
+  /* Purchased Content Section */
+  #purchasedSection {
+    margin-top: 2rem;
+  }
+  #purchasedSection h2 {
+    font-size: 1.9rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    color: #1e3a8a;
+    text-align: center;
+  }
+  #purchasedList {
+    list-style: none;
+    padding: 0 2rem;
+  }
+  #purchasedList li {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #334466;
+    margin: 0.6rem 0;
+  }
+  /* About Section */
+  #aboutSection {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #222;
+    padding: 0 15px;
+  }
+  #aboutSection h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 900;
+    color: #1e3a8a;
+  }
+  /* Misc */
+  #downloadBtn {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    background-color: #2563eb;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 10px 1.6rem;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 5px 18px rgba(37, 99, 235, 0.7);
+    user-select: none;
+    z-index: 3000;
+    transition: background-color 0.3s ease;
+  }
+  #downloadBtn:hover, #downloadBtn:focus{
+    background-color: #1d4ed8;
+    outline: none;
+  }
+  /* Responsive */
+  @media(max-width:720px){
+    .platform-title {font-size: 3rem; }
+    #appContainer {padding: 1rem;}
+    .lesson-title {font-size:1.4rem;}
+    .buy-btn {width:100% !important;}
+  }
+</style>
+</head>
+<body>
+  <div id="appContainer" role="main" tabindex="-1">
 
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
+    <div class="platform-title-container" aria-label="اسم المنصة">
+      <h1 class="platform-title">A step in cybersecurity</h1>
+      <p class="platform-subtitle">منصة تعليمية متكاملة في الأمن السيبراني</p>
+    </div>
 
-In jurisdictions that recognize copyright laws, the author or authors
-of this software dedicate any and all copyright interest in the
-software to the public domain. We make this dedication for the benefit
-of the public at large and to the detriment of our heirs and
-successors. We intend this dedication to be an overt act of
-relinquishment in perpetuity of all present and future rights to this
-software under copyright law.
+    <nav id="topNavBar" role="navigation" aria-label="شريط التنقل العلوي">
+      <button id="homeBtn" aria-label="الصفحة الرئيسية" class="active" type="button" aria-pressed="true" tabindex="0">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M32 12L8 36h6v16h12V40h8v12h12V36h6z"/></svg>
+        <span class="sr-only">الرئيسية</span>
+      </button>
+      <button id="aboutBtn" aria-label="حول المنصة" type="button" aria-pressed="false" tabindex="0">حول</button>
+      <button id="contactBtn" aria-label="تواصل مع المالك" type="button" aria-pressed="false" tabindex="0">تواصل</button>
+      <button id="searchBtn" aria-label="بحث في الدروس" type="button" aria-pressed="false" tabindex="0">بحث</button>
+    </nav>
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+    <!-- Login screen -->
+    <section id="loginContainer" role="main" aria-labelledby="loginTitle" tabindex="0">
+      <h2 id="loginTitle">تسجيل الدخول</h2>
+      <p class="instruction">الرجاء تسجيل الدخول باستخدام حسابك. إذا لم تكن تمتلك حسابًا اضغط على "إنشاء حساب".</p>
+      <form id="loginForm" novalidate autocomplete="off">
+        <label for="emailInput">البريد الإلكتروني</label>
+        <input type="email" id="emailInput" name="email" required aria-required="true" placeholder="example@gmail.com" />
+        <div id="emailError" class="error-msg" aria-live="polite"></div>
+        <label for="passwordInput">كلمة المرور</label>
+        <input type="password" id="passwordInput" name="password" required aria-required="true" placeholder="كلمة المرور" minlength="8" />
+        <div id="passwordError" class="error-msg" aria-live="polite"></div>
+        <div id="loginServerError" class="error-msg" style="min-height:1.3em; margin-bottom:6px;"></div>
+        <button type="submit">تسجيل الدخول</button>
+      </form>
+      <p id="signupNote">مستخدم جديد؟ <button id="showSignupBtn" type="button">إنشاء حساب</button></p>
+    </section>
 
-For more information, please refer to <https://unlicense.org>
+    <!-- Signup Modal -->
+    <section id="signupModal" role="dialog" aria-modal="true" aria-labelledby="signupTitle" tabindex="-1" style="display:none;">
+      <div class="modal-content">
+        <button class="close-btn" aria-label="إغلاق">&times;</button>
+        <h2 id="signupTitle">إنشاء حساب جديد</h2>
+        <form id="signupForm" novalidate autocomplete="off">
+          <label for="signupEmail">البريد الإلكتروني</label>
+          <input type="email" id="signupEmail" name="signupEmail" required aria-required="true" placeholder="example@gmail.com" />
+          <div id="signupEmailError" class="error-msg" aria-live="polite"></div>
+
+          <label for="signupPassword">كلمة المرور</label>
+          <input type="password" id="signupPassword" name="signupPassword" required aria-required="true" placeholder="كلمة المرور" minlength="8" />
+          <div id="signupPasswordError" class="error-msg" aria-live="polite"></div>
+
+          <div class="role-selection" role="radiogroup" aria-labelledby="roleLabel" style="margin-top:1rem; color:#444;">
+            <label id="roleLabel" style="font-weight:700; margin-bottom:0.3rem;">نوع المستخدم:</label>
+            <div class="role-option"><input type="radio" id="roleEdu" name="userRole" value="edu" checked><label for="roleEdu">مستخدم تعليمي</label></div>
+            <div class="role-desc" style="font-size:0.9rem; color:#666;">فعّال فورياً مع صلاحيات مشاهدة الدروس فقط.</div>
+            <div class="role-option" style="margin-top:10px"><input type="radio" id="roleTeam" name="userRole" value="team"><label for="roleTeam">عضو فريق العمل</label></div>
+            <div class="role-desc" style="font-size:0.9rem; color:#666;">يتطلب تفعيل المالك مع صلاحيات التعديل.</div>
+          </div>
+
+          <button type="submit" style="margin-top:1.5rem;">إنشاء حساب</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Main app section placeholder -->
+    <section id="appSection" class="mainPage" aria-label="محتوى المنصة" style="display:none; text-align:center;">
+      <p>مرحباً! المحتوى والوظائف المتقدمة سيتم إضافتها هنا.</p>
+    </section>
+
+  </div>
+
+  <button id="downloadBtn" aria-label="تحميل منصة التعليم" title="تحميل منصة التعليم" style="position:fixed; bottom:15px; left:15px; background:#2563eb; color:#fff; border:none; border-radius:20px; padding:10px 16px; cursor:pointer; z-index:1000; user-select:none;">تحميل المنصة</button>
+
+  <script>
+    emailjs.init("YOUR_EMAILJS_USER_ID");
+
+    // Store full platform content as string for download (simplified placeholder)
+    const fullPlatformFullContent = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A step in cybersecurity - منصة تعليمية متكاملة</title>
+<style>/* كامل التنسيقات والخطوط والوظائف كما في الملف المرسل */</style>
+</head>
+<body>
+<!-- محتوى المنصة الكامل */
+</body>
+</html>`;
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const blob = new Blob([fullPlatformFullContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "education_platform_final.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Navigation handling
+    const homeBtn = document.getElementById("homeBtn");
+    const aboutBtn = document.getElementById("aboutBtn");
+    const contactBtn = document.getElementById("contactBtn");
+    const searchBtn = document.getElementById("searchBtn");
+
+    const loginContainer = document.getElementById("loginContainer");
+    const signupModal = document.getElementById("signupModal");
+    const appSection = document.getElementById("appSection");
+    const homepage = document.getElementById("homepage");
+    const aboutSection = document.getElementById("about");
+
+    function setActiveButton(btn) {
+      [homeBtn, aboutBtn, contactBtn, searchBtn].forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    }
+    function showContentSection(section) {
+      [homepage, aboutSection, appSection].forEach(s => (s.style.display = "none"));
+      section.style.display = "block";
+    }
+
+    homeBtn.onclick = () => {
+      setActiveButton(homeBtn);
+      showContentSection(homepage);
+    };
+    aboutBtn.onclick = () => {
+      setActiveButton(aboutBtn);
+      showContentSection(aboutSection);
+    };
+    contactBtn.onclick = () => {
+      alert("ميزة تواصل سيتم توفيرها لاحقًا.");
+      setActiveButton(contactBtn);
+    };
+    searchBtn.onclick = () => {
+      setActiveButton(searchBtn);
+      showContentSection(homepage);
+    };
+    document.getElementById("showSignupBtn").onclick = () => {
+      signupModal.classList.add("active");
+      loginContainer.style.display = "none";
+    };
+    document.querySelector("#signupModal .close-btn").onclick = () => {
+      signupModal.classList.remove("active");
+      loginContainer.style.display = "block";
+    };
+
+    // Simple user login/signup mechanisms to be implemented as previously described...
+
+  </script>
+</body>
+</html>
